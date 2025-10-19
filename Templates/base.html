@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <title>MonClothes</title>
+    </head>
+    <body>
+        <nav>
+            <form method="get" action="{% url 'Lupa:busqueda' %}">
+                <input type="text" name="query" placeholder="Buscar ropa...">
+                <button type="submit">🔍</button>
+            </form>
+            <a href="{% url 'carrito:ver_carrito' %}">Carrito</a>
+        </nav>
+        {% block content %}
+        {% endblock %}
+    </body>
+    </html>

@@ -24,3 +24,21 @@ def limpiar_carrito(request):
     carrito = Carrito(request)
     carrito.limpiar()
     return redirect('tienda')
+
+def ver_carrito(request):
+        carrito = Carrito(request)
+        items = []
+        total = 0
+        for item_id, item in carrito.carrito.items():
+            try:
+                producto = Producto.objects.get(id=item_id)
+                subtotal = producto.precio * item['cantidad']
+                items.append({
+                    'producto': producto,
+                    'cantidad': item['cantidad'],
+                    'subtotal': subtotal
+                })
+                total += subtotal
+            except Producto.DoesNotExist:
+                pass
+        return render(request, 'carrito/ver_carrito.html', {'items': items, 'total': total})

@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
+from django.conf import settings
 from bunny import settings
 from store.views import index
 from django.conf.urls.static import static
@@ -24,9 +25,10 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
      path('',index),
-    path('', include('usuarios.urls')),
+    path('usuarios/', include('usuarios.urls')),
     path('carrito/', include('carrito.urls')),
     path('store/', include('store.urls')),
+    path('Lupa/', include('Lupa.urls')),
 
 ]
 
