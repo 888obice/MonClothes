@@ -1,0 +1,64 @@
+<h1>Tienda</h1>
+
+{% for producto in productos %}
+<div style="border:1px solid #ccc; padding:10px; margin:10px;">
+    <h3>{{ producto.nombre }}</h3>
+    <p>Precio: ${{ producto.precio }}</p>
+    {% if producto.imagen %}
+        <img src="{{ producto.imagen.url }}" width="100">
+    {% endif %}
+    <a href="{% url 'agregar_producto' producto.id %}">Agregar al carrito</a>
+</div>
+{% endfor %}
+
+<hr>
+
+<h2>Carrito de compras</h2>
+{% if request.session.carrito %}
+    <ul>
+        {% for key, item in request.session.carrito.items %}
+            <li>
+                {{ item.nombre }} ({{ item.cantidad }}) — ${{ item.precio }} c/u
+                <a href="{% url 'restar_producto' item.producto_id %}">-</a>
+                <a href="{% url 'agregar_producto' item.producto_id %}">+</a>
+                <a href="{% url 'eliminar_producto' item.producto_id %}">Eliminar</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <p><strong>Total: ${{ request.session.carrito|dictsort:"precio"|length }}</strong></p>
+    <a href="{% url 'limpiar_carrito' %}">Vaciar carrito</a>
+{% else %}
+    <p>Tu carrito está vacío.</p>
+{% endif %}
+<h1>Tienda</h1>
+
+{% for producto in productos %}
+<div style="border:1px solid #ccc; padding:10px; margin:10px;">
+    <h3>{{ producto.nombre }}</h3>
+    <p>Precio: ${{ producto.precio }}</p>
+    {% if producto.imagen %}
+        <img src="{{ producto.imagen.url }}" width="100">
+    {% endif %}
+    <a href="{% url 'agregar_producto' producto.id %}">Agregar al carrito</a>
+</div>
+{% endfor %}
+
+<hr>
+
+<h2>Carrito de compras</h2>
+{% if request.session.carrito %}
+    <ul>
+        {% for key, item in request.session.carrito.items %}
+            <li>
+                {{ item.nombre }} ({{ item.cantidad }}) — ${{ item.precio }} c/u
+                <a href="{% url 'restar_producto' item.producto_id %}">-</a>
+                <a href="{% url 'agregar_producto' item.producto_id %}">+</a>
+                <a href="{% url 'eliminar_producto' item.producto_id %}">Eliminar</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <p><strong>Total: ${{ request.session.carrito|dictsort:"precio"|length }}</strong></p>
+    <a href="{% url 'limpiar_carrito' %}">Vaciar carrito</a>
+{% else %}
+    <p>Tu carrito está vacío.</p>
+{% endif %}

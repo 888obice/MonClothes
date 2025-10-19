@@ -1,0 +1,24 @@
+<h1>Catálogo de Productos</h1>
+
+{% for categoria in categorias %}
+    <h2>{{ categoria.nombre }}</h2>
+
+    {% for subcategoria in categoria.subcategorias.all %}
+        <h3>{{ subcategoria.nombre }}</h3>
+        <div style="display:flex; flex-wrap:wrap;">
+            {% for producto in productos %}
+                {% if producto.subcategoria == subcategoria %}
+                    <div style="border:1px solid #ddd; margin:10px; padding:10px; width:200px;">
+                        <h4>{{ producto.nombre }}</h4>
+                        {% if producto.imagen %}
+                            <img src="{{ producto.imagen.url }}" width="150" alt="{{ producto.nombre }}">
+                        {% endif %}
+                        <p>${{ producto.precio }}</p>
+                        <a href="{% url 'agregar_producto' producto.id %}">🛒 Agregar</a>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endfor %}
+{% endfor %}
+
