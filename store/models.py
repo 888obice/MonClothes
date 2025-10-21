@@ -1,13 +1,33 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 class Producto(models.Model):
     nombre = models.CharField(max_length=100)
     precio = models.IntegerField()
-    cantidad = models.IntegerField()
+    cantidad = models.PositiveIntegerField(default=1)
     talla = models.CharField(max_length=10)
-    dimensiones = models.CharField(max_length=200)
+    dimensiones = models.TextField(blank=True, null=True)
     imagen = models.ImageField(upload_to='productos/', null=True, blank=True)
+    stock = models.PositiveIntegerField(default=0)
 
+    
+    def clean(self):
+        # 🧩 Validar que el precio no sea negativo
+        if self.precio < 0:
+            raise ValidationError({'precio': 'El precio no puede ser negativo.'})
+
+        # 🧩 Validar que la cantidad esté entre 1 y el stock
+        if self.cantidad <= 0:
+            raise ValidationError({'cantidad': 'La cantidad debe ser mayor que 0.'})
+
+        if self.cantidad > self.stock:
+            raise ValidationError({'cantidad': 'La cantidad no puede superar el stock disponible.'})
+
+    def save(self, *args, **kwargs):
+        # Llama al método clean() antes de guardar
+        self.clean()
+        super().save(*args, **kwargs)
+ 
     def __str__(self):
         return f"{self.nombre} - ${self.precio}"
 
