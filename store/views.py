@@ -20,3 +20,6 @@ def catalogo(request):
         'categorias': categorias,
         'productos': productos
     })
+def inicio(request):
+    productos = Producto.objects.all()
+    return render(request, 'store/index.html', {'productos': productos})
