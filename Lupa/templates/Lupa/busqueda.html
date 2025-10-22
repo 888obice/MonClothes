@@ -1,26 +1,195 @@
 {% extends 'base.html' %}
-    {% block content %}
-        <h1>Buscar en MonClothes</h1>
-        <form method="get" action="{% url 'Lupa:busqueda' %}">
-            {{ form.as_p }}
-            <button type="submit">🔍 Buscar</button>
-        </form>
 
-        {% if resultados %}
-            <h2>Resultados: {{ resultados.count }}</h2>
-            <ul>
-                {% for producto in resultados %}
-                    <li>
-                        <strong>{{ producto.nombre }}</strong> - {{ producto.precio }} €<br>
-                        {{ producto.descripcion }}<br>
+{% block content %}
+<style>
+    .busqueda-container {
+        max-width: 900px;
+        margin: 40px auto;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    form {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 25px;
+    }
+
+    form input[type="text"],
+    form select {
+        padding: 10px 14px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        width: 60%;
+        font-size: 15px;
+    }
+
+    form button {
+        background-color: #f4a4b5;
+        border: none;
+        color: #fff;
+        padding: 10px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.3s ease;
+    }
+
+    form button:hover {
+        background-color: #d9446e;
+    }
+
+    h2 {
+        color: #d9446e;
+        margin-bottom: 15px;
+    }
+
+    ul.resultados {
+        list-style: none;
+        padding: 0;
+    }
+
+    ul.resultados li {
+        background: #f9f9f9;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    ul.resultados li:hover {
+        transform: scale(1.01);
+        background: #fff0f4;
+    }
+
+    .producto-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .producto-info img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .producto-info strong {
+        color: #d9446e;
+        font-size: 16px;
+    }
+
+    .acciones a {
+        background: #f9b8c6;
+        color: #333;
+        padding: 8px 14px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background 0.3s ease;
+    }
+
+    .acciones a:hover {
+        background: #f4a4b5;
+    }
+
+    p.vacio {
+        text-align: center;
+        font-size: 16px;
+        color: #777;
+        margin-top: 20px;
+    }
+
+    /* Barra inferior rosada */
+    .barra-inferior {
+        background-color: #f4a4b5;
+        height: 60px;
+        border-radius: 0 0 12px 12px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 0 20px;
+        margin-top: 30px;
+    }
+
+    .barra-inferior button {
+        background-color: #fff;
+        color: #d9446e;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .barra-inferior button:hover {
+        background-color: #ffe2eb;
+    }
+</style>
+
+<div class="busqueda-container">
+    <h1>🔍 Buscar en MonClothes</h1>
+
+    <form method="get" action="{% url 'Lupa:busqueda' %}">
+        {{ form.as_p }}
+        <button type="submit">Buscar</button>
+    </form>
+
+    {% if resultados %}
+        <h2>Resultados: {{ resultados.count }}</h2>
+        <ul class="resultados">
+            {% for producto in resultados %}
+                <li>
+                    <div class="producto-info">
                         {% if producto.imagen %}
-                            <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" width="100">
+                            <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}">
                         {% endif %}
-                        <a href="{% url 'carrito:agregar_producto' producto.id %}">Agregar al carrito</a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No se encontraron productos. Prueba otra palabra.</p>
-        {% endif %}
-    {% endblock %}
+                        <div>
+                            <strong>{{ producto.nombre }}</strong><br>
+                            {{ producto.descripcion }}<br>
+                            <span>{{ producto.precio }} €</span>
+                        </div>
+                    </div>
+                    <div class="acciones">
+                        <a href="{% url 'carrito:agregar_producto' producto.id %}">Agregar al carrito 🛍️</a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="vacio">No se encontraron productos. Prueba otra palabra.</p>
+    {% endif %}
+
+    <!-- Barra inferior -->
+    <div class="barra-inferior">
+        <button onclick="registrar()">Registrarte</button>
+    </div>
+</div>
+
+<script>
+    function registrar() {
+        const correo = prompt("✉️ Ingresa tu correo electrónico para registrarte:");
+        if (correo) {
+            alert(`Gracias por registrarte, ${correo}! 💖`);
+        } else {
+            alert("Por favor ingresa un correo válido.");
+        }
+    }
+</script>
+{% endblock %}

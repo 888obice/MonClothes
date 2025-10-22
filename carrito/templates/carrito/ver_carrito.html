@@ -1,23 +1,160 @@
 {% extends 'base.html' %}
-    {% block content %}
-        <h1>Tu Carrito</h1>
-        {% if items %}
-            <ul>
-                {% for item in items %}
-                    <li>
-                        <strong>{{ item.nombre }}</strong> - {{ item.precio|floatformat:2 }} € x {{ item.cantidad }} = {{ item.subtotal|floatformat:2 }} €<br>
+
+{% block content %}
+<style>
+    .carrito-container {
+        max-width: 900px;
+        margin: 40px auto;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .carrito-container h1 {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #333;
+    }
+
+    ul.carrito-lista {
+        list-style: none;
+        padding: 0;
+    }
+
+    ul.carrito-lista li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #f9f9f9;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 15px;
+        transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    ul.carrito-lista li:hover {
+        transform: scale(1.01);
+        background: #fff0f4;
+    }
+
+    .item-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .item-info img {
+        border-radius: 8px;
+        object-fit: cover;
+        width: 80px;
+        height: 80px;
+    }
+
+    .item-info strong {
+        color: #d9446e;
+        font-size: 16px;
+    }
+
+    .acciones a {
+        margin-left: 10px;
+        color: #e75480;
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .acciones a:hover {
+        color: #a72e50;
+    }
+
+    .total {
+        text-align: right;
+        margin-top: 20px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .acciones-finales {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 25px;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: none;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background 0.3s ease;
+    }
+
+    .btn-vaciar {
+        background: #ff7a7a;
+        color: white;
+    }
+
+    .btn-vaciar:hover {
+        background: #d9446e;
+    }
+
+    .btn-continuar {
+        background: #f9b8c6;
+        color: #333;
+    }
+
+    .btn-continuar:hover {
+        background: #f4a4b5;
+    }
+
+    p.vacio {
+        text-align: center;
+        font-size: 16px;
+        color: #777;
+    }
+</style>
+
+<div class="carrito-container">
+    <h1>🛒 Tu Carrito</h1>
+
+    {% if items %}
+        <ul class="carrito-lista">
+            {% for item in items %}
+                <li>
+                    <div class="item-info">
                         {% if item.imagen %}
-                            <img src="{{ item.imagen }}" alt="{{ item.nombre }}" width="100">
+                            <img src="{{ item.imagen }}" alt="{{ item.nombre }}">
                         {% endif %}
-                        <a href="{% url 'carrito:restar_producto' item.producto_id %}">Restar</a>
-                        <a href="{% url 'carrito:eliminar_producto' item.producto_id %}">Eliminar</a>
-                    </li>
-                {% endfor %}
-            </ul>
-            <p><strong>Total: {{ total|floatformat:2 }} €</strong></p>
-            <a href="{% url 'carrito:limpiar_carrito' %}">Vaciar carrito</a>
-        {% else %}
-            <p>Tu carrito está vacío.</p>
-        {% endif %}
-        <a href="{% url 'Lupa:busqueda' %}">Seguir comprando</a>
-    {% endblock %}
+                        <div>
+                            <strong>{{ item.nombre }}</strong><br>
+                            <small>{{ item.precio|floatformat:2 }} € x {{ item.cantidad }}</small><br>
+                            <span>Subtotal: {{ item.subtotal|floatformat:2 }} €</span>
+                        </div>
+                    </div>
+                    <div class="acciones">
+                        <a href="{% url 'carrito:restar_producto' item.producto_id %}">− Restar</a>
+                        <a href="{% url 'carrito:eliminar_producto' item.producto_id %}">🗑 Eliminar</a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <p class="total">Total: {{ total|floatformat:2 }} €</p>
+
+        <div class="acciones-finales">
+            <a href="{% url 'carrito:limpiar_carrito' %}" class="btn btn-vaciar">Vaciar carrito</a>
+            <a href="{% url 'Lupa:busqueda' %}" class="btn btn-continuar">Seguir comprando</a>
+        </div>
+    {% else %}
+        <p class="vacio">Tu carrito está vacío 🛍️</p>
+        <div style="text-align:center;">
+            <a href="{% url 'Lupa:busqueda' %}" class="btn btn-continuar">Explorar productos</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
