@@ -1,2 +1,71 @@
-<h2>bienvenidos a bunny mon clothes<h2>
-    
+
+    <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda MonClothes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
+        <a class="navbar-brand" href="{% url 'inicio' %}">🧥 MonClothes</a>
+
+        <div class="collapse navbar-collapse justify-content-center">
+            <form class="d-flex" role="search" method="get" action="{% url 'busqueda' %}">
+                <input class="form-control me-2" type="search" placeholder="Buscar producto..." name="q">
+                <button class="btn btn-outline-success" type="submit">Buscar</button>
+            </form>
+        </div>
+
+        <div class="d-flex">
+            <a href="{% url 'login' %}" class="btn btn-outline-light me-2">Iniciar sesión</a>
+            <a href="{% url 'carrito' %}" class="btn btn-outline-warning">🛒 Carrito</a>
+        </div>
+    </nav>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <!-- CATÁLOGO IZQUIERDA -->
+            <aside class="col-md-3 bg-white p-3 shadow-sm rounded">
+                <h5>Categorías</h5>
+                <ul class="list-group">
+                    <li class="list-group-item"><a href="#">Poleras</a></li>
+                    <li class="list-group-item"><a href="#">Pantalones</a></li>
+                    <li class="list-group-item"><a href="#">Chaquetas</a></li>
+                    <li class="list-group-item"><a href="#">Accesorios</a></li>
+                </ul>
+            </aside>
+
+            <!-- PRODUCTOS CENTRO -->
+            <main class="col-md-9">
+                <div class="row">
+                    {% for producto in productos %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ producto.nombre }}</h5>
+                                <p class="card-text">${{ producto.precio }}</p>
+                                <a href="#" class="btn btn-primary">Agregar al carrito</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p>No hay productos disponibles.</p>
+                    {% endfor %}
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-center text-light py-3 mt-5">
+        <p>© 2025 MonClothes - Todos los derechos reservados</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
