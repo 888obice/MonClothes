@@ -23,3 +23,9 @@ def catalogo(request):
 def inicio(request):
     productos = Producto.objects.all()
     return render(request, 'store/index.html', {'productos': productos})
+def busqueda(request):
+    q = request.GET.get('q', '')
+    productos = Producto.objects.filter(nombre__icontains=q)
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return render(request, 'productos_list.html', {'productos': productos})
+    return render(request, 'index.html', {'productos': productos})
