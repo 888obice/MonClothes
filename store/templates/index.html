@@ -87,8 +87,6 @@
                 <ul class="list-group">
                     <li class="list-group-item"><a href="#" class="text-decoration-none text-dark">👕 Ropa</a></li>
                     <li class="list-group-item"><a href="#" class="text-decoration-none text-dark">👜 Accesorios</a></li>
-                    <li class="list-group-item"><a href="#" class="text-decoration-none text-dark">👟 Calzado</a></li>
-                    <li class="list-group-item"><a href="#" class="text-decoration-none text-dark">🎒 Bolsos</a></li>
                 </ul>
             </aside>
 
@@ -141,41 +139,3 @@ document.getElementById('busquedaForm').addEventListener('submit', function(e) {
 
 </body>
 </html>
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
-    <a class="navbar-brand" href="{% url 'inicio' %}">🧥 MonClothes</a>
-
-    <div class="collapse navbar-collapse justify-content-center">
-        <form id="busquedaForm" class="d-flex" role="search">
-            <input id="buscarInput" class="form-control me-2" type="search" placeholder="Buscar productos..." aria-label="Buscar">
-            <button class="btn btn-outline-success" type="submit">Buscar</button>
-        </form>
-    </div>
-
-    <div class="d-flex">
-        <a href="{% url 'login' %}" class="btn btn-outline-light me-2">Iniciar sesión</a>
-        <a href="{% url 'carrito:ver_carrito' %}" class="btn btn-outline-warning">🛒 Carrito</a>
-    </div>
-</nav>
-
-<!-- CONTENIDO PRINCIPAL -->
-<div class="container-fluid mt-4">
-    <div class="row">
-        <!-- CATÁLOGO IZQUIERDA -->
-        <aside class="col-md-3 bg-white p-3 shadow-sm rounded">
-            <h5>Categorías</h5>
-            <ul class="list-group">
-                <li class="list-group-item"><a href="#">Ropa</a></li>
-                <li class="list-group-item"><a href="#">Accesorios</a></li>
-            </ul>
-        </aside>
-
-        <!-- PRODUCTOS CENTRO -->
-        <main class="col-md-9">
-            <div id="productosContainer" class="row">
-                {% include 'productos_list.html' %}
-            </div>
-        </main>
-    </div>
-</div>
-
