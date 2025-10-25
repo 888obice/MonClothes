@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="pt-24 pb-12"></div>
+<!-- 🩷 Hero principal -->
+<section class="bg-monpink flex flex-col items-center justify-center text-center h-[70vh] md:h-[80vh] px-6">
+  <h1 class="text-5xl md:text-6xl font-bebas text-monblack tracking-wide">
+    TU ESTILO, TU ESENCIA 💫
+  </h1>
+  <p class="mt-4 text-gray-700 text-lg max-w-xl">
+    Ropa y accesorios pensados para mujeres reales, modernas y con actitud.
+  </p>
+  <a href="#catalogo"
+     class="mt-8 inline-block bg-monblack text-white px-8 py-3 rounded-md hover:bg-gray-800 transition">
+     Ver productos
+  </a>
+</section>
+
+
+<!-- 🛍️ Catálogo integrado -->
+<section id="catalogo" class="py-16 bg-white">
+  <h2 class="text-center text-3xl font-bebas text-pink-600 mb-10">Catálogo de productos</h2>
+
+  {% if productos %}
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8 px-8 md:px-16">
+      {% for producto in productos %}
+        <div class="bg-white rounded-xl shadow hover:shadow-xl transition p-4 text-center">
+          <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}"
+               class="w-full h-60 object-cover rounded-lg mb-3">
+          <h3 class="font-semibold text-gray-700 text-lg">{{ producto.nombre }}</h3>
+          <p class="text-gray-500 mb-3">${{ producto.precio }}</p>
+          <a href="{% url 'agregar_al_carrito' producto.id %}"
+             class="inline-block bg-pink-500 text-white px-5 py-2 rounded-md hover:bg-pink-600 transition">
+             Agregar al carrito
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center text-gray-600 mt-8">
+      <p class="text-lg">Aún no hay productos disponibles 💗</p>
+      <p class="mt-2 text-sm text-gray-500">Vuelve pronto para descubrir nuestras novedades.</p>
+    </div>
+  {% endif %}
+</section>
+
+<!-- 🌿 Sección “Sobre MonClothes” -->
+<section class="bg-gray-50 py-20 text-center">
+  <h2 class="text-3xl font-bebas text-pink-600 mb-4">Sobre MonClothes</h2>
+  <p class="max-w-2xl mx-auto text-gray-600 text-lg leading-relaxed">
+    En MonClothes creemos que la moda es una forma de expresión.  
+    Cada prenda está pensada para resaltar tu estilo y acompañarte en tu día a día.
+  </p>
+  <p class="mt-3 text-gray-500">Creado con amor desde Chile 🇨🇱</p>
+</section>
+
+
+
+<!-- 🎢 Scroll suave -->
+<script>
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    document.querySelector(this.getAttribute('href')).scrollIntoView({
+      behavior: 'smooth'
+    });
+  });
+});
+</script>
+
+{% endblock %}

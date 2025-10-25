@@ -1,160 +1,49 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<style>
-    .carrito-container {
-        max-width: 900px;
-        margin: 40px auto;
-        background: #fff;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        padding: 30px;
-        font-family: 'Poppins', sans-serif;
-    }
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-semibold mb-6 text-center">Tu Cesta</h1>
 
-    .carrito-container h1 {
-        text-align: center;
-        margin-bottom: 25px;
-        color: #333;
-    }
+  {% if carrito %}
+    <div class="space-y-4">
+      {% for item in carrito.values %}
+        <div class="flex items-center justify-between border-b pb-4">
+          <div class="flex items-center gap-4">
+            {% if item.imagen %}
+              <img src="{{ item.imagen }}" alt="{{ item.nombre }}" class="w-20 h-20 object-cover rounded">
+            {% endif %}
+            <div>
+              <h2 class="font-semibold">{{ item.nombre }}</h2>
+              <p>${{ item.precio }} x {{ item.cantidad }}</p>
+            </div>
+          </div>
 
-    ul.carrito-lista {
-        list-style: none;
-        padding: 0;
-    }
-
-    ul.carrito-lista li {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background: #f9f9f9;
-        border-radius: 10px;
-        padding: 15px;
-        margin-bottom: 15px;
-        transition: transform 0.2s ease, background 0.2s ease;
-    }
-
-    ul.carrito-lista li:hover {
-        transform: scale(1.01);
-        background: #fff0f4;
-    }
-
-    .item-info {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .item-info img {
-        border-radius: 8px;
-        object-fit: cover;
-        width: 80px;
-        height: 80px;
-    }
-
-    .item-info strong {
-        color: #d9446e;
-        font-size: 16px;
-    }
-
-    .acciones a {
-        margin-left: 10px;
-        color: #e75480;
-        font-weight: 600;
-        text-decoration: none;
-        transition: color 0.3s;
-    }
-
-    .acciones a:hover {
-        color: #a72e50;
-    }
-
-    .total {
-        text-align: right;
-        margin-top: 20px;
-        font-size: 18px;
-        font-weight: bold;
-        color: #333;
-    }
-
-    .acciones-finales {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 25px;
-    }
-
-    .btn {
-        display: inline-block;
-        padding: 10px 20px;
-        border-radius: 8px;
-        border: none;
-        text-decoration: none;
-        font-weight: 600;
-        transition: background 0.3s ease;
-    }
-
-    .btn-vaciar {
-        background: #ff7a7a;
-        color: white;
-    }
-
-    .btn-vaciar:hover {
-        background: #d9446e;
-    }
-
-    .btn-continuar {
-        background: #f9b8c6;
-        color: #333;
-    }
-
-    .btn-continuar:hover {
-        background: #f4a4b5;
-    }
-
-    p.vacio {
-        text-align: center;
-        font-size: 16px;
-        color: #777;
-    }
-</style>
-
-<div class="carrito-container">
-    <h1>🛒 Tu Carrito</h1>
-
-    {% if items %}
-        <ul class="carrito-lista">
-            {% for item in items %}
-                <li>
-                    <div class="item-info">
-                        {% if item.imagen %}
-                            <img src="{{ item.imagen }}" alt="{{ item.nombre }}">
-                        {% endif %}
-                        <div>
-                            <strong>{{ item.nombre }}</strong><br>
-                            <small>{{ item.precio|floatformat:2 }} € x {{ item.cantidad }}</small><br>
-                            <span>Subtotal: {{ item.subtotal|floatformat:2 }} €</span>
-                        </div>
-                    </div>
-                    <div class="acciones">
-                        <a href="{% url 'carrito:restar_producto' item.producto_id %}">− Restar</a>
-                        <a href="{% url 'carrito:eliminar_producto' item.producto_id %}">🗑 Eliminar</a>
-                    </div>
-                </li>
-            {% endfor %}
-        </ul>
-
-        <p class="total">Total: {{ total|floatformat:2 }} €</p>
-
-        <div class="acciones-finales">
-            <a href="{% url 'carrito:limpiar_carrito' %}" class="btn btn-vaciar">Vaciar carrito</a>
-            <a href="{% url 'Lupa:busqueda' %}" class="btn btn-continuar">Seguir comprando</a>
+          <div class="flex items-center gap-2">
+            <a href="{% url 'restar_del_carrito' item.producto_id %}" class="px-3 py-1 bg-gray-200 rounded">-</a>
+            <a href="{% url 'agregar_al_carrito' item.producto_id %}" class="px-3 py-1 bg-gray-200 rounded">+</a>
+            <a href="{% url 'eliminar_del_carrito' item.producto_id %}" class="px-3 py-1 bg-red-500 text-white rounded">x</a>
+          </div>
         </div>
-    {% else %}
-        <p class="vacio">Tu carrito está vacío 🛍️</p>
-        <div style="text-align:center;">
-            <a href="{% url 'Lupa:busqueda' %}" class="btn btn-continuar">Explorar productos</a>
-        </div>
-    {% endif %}
+      {% endfor %}
+    </div>
+
+    <div class="text-right mt-6">
+      <p class="text-xl font-bold">Total: ${{ total }}</p>
+      <a href="{% url 'limpiar_carrito' %}" class="mt-4 inline-block bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">
+        Vaciar Cesta
+      </a>
+    </div>
+  {% else %}
+   <div class="p-10 text-center">
+  <h2 class="text-2xl font-semibold text-pink-500">Tu cesta está vacía</h2>
+  <p class="mt-2 text-gray-600">Cuando agregues productos, aparecerán aquí.</p>
+  <a href="/#catalogo" class="inline-block mt-6 px-5 py-2.5 bg-pink-500 text-white rounded hover:bg-pink-600 transition">
+    Explorar productos
+  </a>
+</div>
+
+
+  {% endif %}
 </div>
 {% endblock %}

@@ -1,15 +1,21 @@
 # Entorno virtual
-    venv/
-    
-    # Archivos de Python
-    *.pyc
-    __pycache__/
-    
-    # Base de datos
-    db.sqlite3
-    
-    # Archivos de medios (imágenes subidas)
-    media/
-    
-    # Archivos de log
-    *.log
+venv/
+
+# Node / Tailwind
+node_modules/
+static/css/output.css
+package-lock.json
+
+# Base de datos
+db.sqlite3
+
+# Archivos temporales de Python
+__pycache__/
+*.pyc
+
+# Sistema
+.DS_Store
+*.log
+
+
+

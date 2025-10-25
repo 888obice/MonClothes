@@ -1,9 +1,10 @@
+# store/urls.py
 from django.urls import path
-from .views import inicio,tienda
 from . import views
 
 urlpatterns = [
-    path('', views.inicio, name='inicio'),
-    path('catalogo/', views.catalogo, name='catalogo'),
-    path('',views.tienda, name='tienda')
+    path("", views.index, name="inicio"),        # Home: elige index como página principal
+    path("catalogo/", views.catalogo, name="catalogo"),
+    path("tienda/", views.tienda, name="tienda"),  # o elimina si duplicado
+    path('buscar/', views.buscar_productos, name='buscar_productos'),
 ]

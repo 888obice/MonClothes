@@ -1,17 +1,271 @@
+{% load static %}
 <!DOCTYPE html>
-    <html>
-    <head>
-        <title>MonClothes</title>
-    </head>
-    <body>
-        <nav>
-            <form method="get" action="{% url 'Lupa:busqueda' %}">
-                <input type="text" name="query" placeholder="Buscar ropa...">
-                <button type="submit">🔍</button>
-            </form>
-            <a href="{% url 'carrito:ver_carrito' %}">Carrito</a>
-        </nav>
-        {% block content %}
-        {% endblock %}
-    </body>
-    </html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MonClothes</title>
+
+  <link rel="stylesheet" href="{% static 'css/output.css' %}">
+
+
+  
+
+  <!-- Íconos Font Awesome (CDN seguro) -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer" />
+
+  <!-- Fuentes: Bebas Neue para títulos y Inter para texto -->
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+
+<body class="bg-gray-50 text-gray-800">
+
+<!-- NAVBAR -->
+<header class="w-full bg-[#F2D0D9] shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+    <!-- LOGO -->
+    <a href="/" class="text-3xl font-display text-azulOscuro tracking-wide">
+      MonClothes
+    </a>
+
+    <!-- CENTRO (Categorías + Buscador) -->
+    <div class="flex items-center gap-6">
+      <button id="btnCategorias" class="text-[#010D26] hover:text-pink-500 font-medium tracking-wide">
+        Categorías
+      </button>
+
+      <form action="{% url 'buscar_productos' %}" method="get"
+            class="relative flex items-center border-b-2 border-[#010D26] w-80">
+        <input id="buscador" name="q" type="text" placeholder="Buscar productos..."
+               class="px-2 py-1 w-full bg-transparent text-[#010D26] placeholder-[#010D26]/60 focus:outline-none font-sans"
+               autocomplete="off">
+        <button type="submit" class="px-2 text-[#010D26] hover:text-pink-500 transition-colors" title="Buscar">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </form>
+    </div>
+
+    <!-- DERECHA (Usuario + Carrito) -->
+    <div class="flex items-center gap-6">
+      <!-- Usuario -->
+<a href="{% url 'login' %}" class="text-[#010D26] hover:text-pink-600 transition" title="Iniciar sesión">
+  <i class="fa-solid fa-user text-xl"></i>
+</a>
+
+
+  <!-- Carrito -->
+  <button id="btnCarrito" class="relative text-[#010D26] hover:text-pink-600 transition" title="Ver Cesta">
+    <i class="fa-solid fa-bag-shopping text-xl"></i>
+        <span id="contadorCarrito"
+              class="absolute -top-2 -right-2 bg-pink-500 text-white text-xs rounded-full px-1.5 py-0.5 hidden">
+          0
+        </span>
+      </button>
+    </div>
+  </div>
+</header>
+
+
+
+
+<!-- SIDEBAR CATEGORÍAS -->
+<aside id="sidebarCategorias"
+       class="fixed top-0 left-0 h-full w-64 bg-white shadow-2xl transform -translate-x-full transition-transform duration-200 ease-out z-40">
+  <div class="p-4 border-b flex justify-between items-center">
+    <h2 class="text-xl font-semibold text-pink-500">Categorías</h2>
+    <button id="btnCerrarSidebar" class="text-gray-500 hover:text-pink-500 text-lg">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <ul class="p-4 space-y-3">
+    {% for categoria in categorias %}
+      <li>
+        <a href="#" class="block py-2 px-3 rounded hover:bg-pink-100 transition">
+          {{ categoria.nombre }}
+        </a>
+      </li>
+    {% empty %}
+      <li class="text-gray-400">No hay categorías disponibles.</li>
+    {% endfor %}
+  </ul>
+</aside>
+
+<!-- MINI-CARRITO -->
+<aside id="miniCarrito"
+       class="fixed top-0 right-0 h-full w-80 bg-white shadow-2xl transform translate-x-full transition-transform duration-200 ease-out z-40 rounded-l-none">
+  <div class="p-4 border-b flex justify-between items-center">
+    <h2 class="text-xl font-semibold text-pink-500">Tu Cesta</h2>
+    <button id="cerrarMiniCarrito" class="text-gray-500 hover:text-pink-500 text-lg">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+  <div id="miniCarritoContenido" class="overflow-y-auto max-h-[85vh] flex justify-center items-center min-h-[100px]">
+    <div class="flex flex-col items-center gap-2 text-pink-500">
+      <div class="w-6 h-6 border-4 border-pink-400 border-t-transparent rounded-full animate-spin"></div>
+      <p class="text-sm text-gray-500">Cargando...</p>
+    </div>
+  </div>
+</aside>
+
+
+
+  <!-- OVERLAY -->
+<div id="overlay" class="fixed inset-0 hidden z-30 pointer-events-none bg-transparent"></div>
+
+
+  <!-- CONTENIDO -->
+ <main>
+  {% block content %}
+  {% endblock %}
+</main>
+
+
+  <!-- FOOTER -->
+  <footer class="bg-gray-100 text-center text-gray-500 py-6 border-t">
+    © 2025 MonClothes — Todos los derechos reservados.
+  </footer>
+
+    <!-- SCRIPT SIDEBAR (categorías con cierre al hacer clic fuera sin overlay oscuro) -->
+<script>
+  const btnCategorias = document.getElementById('btnCategorias');
+  const sidebar = document.getElementById('sidebarCategorias');
+  const btnCerrar = document.getElementById('btnCerrarSidebar');
+
+  // Abre/cierra el panel de categorías
+  function toggleSidebar() {
+    const abierto = !sidebar.classList.contains('-translate-x-full');
+    if (abierto) {
+      sidebar.classList.add('-translate-x-full');
+    } else {
+      sidebar.classList.remove('-translate-x-full');
+    }
+  }
+
+  // Click en botón Categorías
+  btnCategorias.addEventListener('click', toggleSidebar);
+
+  // Click en la X del panel
+  btnCerrar.addEventListener('click', () => {
+    sidebar.classList.add('-translate-x-full');
+  });
+
+  // 🔹 Cerrar al hacer clic fuera del panel
+  document.addEventListener('click', (e) => {
+    const clickDentroSidebar = sidebar.contains(e.target);
+    const clickEnBoton = btnCategorias.contains(e.target);
+    if (!clickDentroSidebar && !clickEnBoton) {
+      sidebar.classList.add('-translate-x-full');
+    }
+  });
+</script>
+
+
+
+  <!-- SCRIPT BUSCADOR DINÁMICO -->
+  <script>
+    const inputBuscador = document.getElementById("buscador");
+    const resultadosDiv = document.getElementById("resultadosBusqueda");
+
+    inputBuscador.addEventListener("input", async (e) => {
+      const query = e.target.value.trim();
+      if (!query) {
+        resultadosDiv.classList.add("hidden");
+        resultadosDiv.innerHTML = "";
+        return;
+      }
+
+      try {
+        const response = await fetch(`/buscar/?q=${encodeURIComponent(query)}`);
+        const data = await response.json();
+
+        if (data.resultados.length > 0) {
+          resultadosDiv.innerHTML = data.resultados.map(prod => `
+            <a href="/producto/${prod.id}/" class="flex items-center gap-3 p-2 hover:bg-gray-100 transition">
+              <img src="${prod.imagen}" alt="${prod.nombre}" class="w-12 h-12 object-cover rounded">
+              <div>
+                <p class="font-medium">${prod.nombre}</p>
+                <p class="text-sm text-gray-600">$${prod.precio}</p>
+              </div>
+            </a>
+          `).join('');
+        } else {
+          resultadosDiv.innerHTML = '<p class="p-3 text-gray-500 text-center">Sin resultados</p>';
+        }
+
+        resultadosDiv.classList.remove("hidden");
+
+      } catch (error) {
+        console.error("Error al buscar:", error);
+      }
+    });
+
+    // Cerrar resultados al hacer clic fuera
+    document.addEventListener("click", (e) => {
+      if (!resultadosDiv.contains(e.target) && e.target !== inputBuscador) {
+        resultadosDiv.classList.add("hidden");
+      }
+    });
+  </script>
+
+ <!-- SCRIPT MINI CARRITO (versión sin fondo oscuro y cierre preciso) -->
+<script>
+  const btnCarrito = document.getElementById('btnCarrito');
+  const miniCarrito = document.getElementById('miniCarrito');
+  const cerrarMiniCarrito = document.getElementById('cerrarMiniCarrito');
+  const contenidoMini = document.getElementById('miniCarritoContenido');
+  const overlay2 = document.getElementById('overlay');
+
+  // Cargar contenido del carrito
+  async function cargarMiniCarrito() {
+    try {
+      const res = await fetch('/carrito/ajax/');
+      const data = await res.json();
+      contenidoMini.innerHTML = data.html;
+    } catch (e) {
+      contenidoMini.innerHTML = "<p class='p-4 text-gray-500 text-center'>No se pudo cargar el carrito 😢</p>";
+    }
+  }
+
+    // Alternar visibilidad del carrito (mejorado para abrir sin retardo)
+  async function toggleMiniCarrito() {
+    const abierto = !miniCarrito.classList.contains('translate-x-full');
+    if (abierto) {
+      cerrarCarrito();
+    } else {
+      // 🔹 Primero abre (instantáneo)
+      abrirCarrito();
+      // 🔹 Luego carga el contenido sin bloquear la animación
+      cargarMiniCarrito();
+    }
+  }
+
+
+  function abrirCarrito() {
+    miniCarrito.classList.remove('translate-x-full');
+    overlay2.classList.remove('hidden');
+  }
+
+  function cerrarCarrito() {
+    miniCarrito.classList.add('translate-x-full');
+    overlay2.classList.add('hidden');
+  }
+
+  // --- EVENTOS ---
+  btnCarrito.addEventListener('click', toggleMiniCarrito);
+  cerrarMiniCarrito.addEventListener('click', cerrarCarrito);
+
+  // Cerrar al hacer clic fuera del carrito (en cualquier parte del documento)
+  document.addEventListener('click', (e) => {
+    const clickDentro = miniCarrito.contains(e.target) || btnCarrito.contains(e.target);
+    if (!clickDentro) cerrarCarrito();
+  });
+</script>
+
+
+</body>
+</html>

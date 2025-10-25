@@ -1,14 +1,11 @@
 from django.urls import path
 from . import views
 
-
-app_name = 'carrito'
-
 urlpatterns = [
-    path('', views.ver_carrito, name='ver_carrito'),
-    path('agregar/<int:producto_id>/', views.agregar_producto, name='agregar_producto'),
-    path('eliminar/<int:producto_id>/', views.eliminar_producto, name='eliminar_producto'),
-    path('restar/<int:producto_id>/', views.restar_producto, name='restar_producto'),
-    path('limpiar/', views.limpiar_carrito, name='limpiar_carrito'),
-    
+    path("", views.ver_carrito, name="ver_carrito"),
+    path("agregar/<int:producto_id>/", views.agregar_al_carrito, name="agregar_al_carrito"),
+    path("eliminar/<int:producto_id>/", views.eliminar_del_carrito, name="eliminar_del_carrito"),
+    path("restar/<int:producto_id>/", views.restar_del_carrito, name="restar_del_carrito"),
+    path("limpiar/", views.limpiar_carrito, name="limpiar_carrito"),
+    path("ajax/", views.vista_carrito_ajax, name="vista_carrito_ajax"),
 ]

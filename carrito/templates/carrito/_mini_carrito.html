@@ -1,0 +1,42 @@
+{% load static %}
+
+{% if carrito %}
+  <div class="p-4">
+    {% for item in carrito.values %}
+      <div class="flex justify-between items-center border-b py-3">
+        <div class="flex items-center gap-3">
+          {% if item.imagen %}
+            <img src="{{ item.imagen }}" alt="{{ item.nombre }}" class="w-14 h-14 object-cover rounded">
+          {% endif %}
+          <div>
+            <p class="font-medium">{{ item.nombre }}</p>
+            <p class="text-sm text-gray-500">${{ item.precio }} x {{ item.cantidad }}</p>
+          </div>
+        </div>
+        <a href="{% url 'eliminar_del_carrito' item.producto_id %}" class="text-red-500 hover:text-red-700">
+          <i class="fa-solid fa-trash"></i>
+        </a>
+      </div>
+    {% endfor %}
+
+    <div class="mt-4 text-right">
+      <p class="font-semibold text-lg mb-2">Total: ${{ total }}</p>
+      <a href="{% url 'ver_carrito' %}" class="inline-block bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600 transition">
+        Ver carrito
+      </a>
+      <a href="{% url 'limpiar_carrito' %}" class="inline-block bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition ml-2">
+        Vaciar
+      </a>
+    </div>
+  </div>
+{% else %}
+  <div class="p-6 text-center">
+  <p class="text-base text-gray-600">Tu cesta está vacía</p>
+  <p class="mt-1 text-sm text-gray-500">Agrega tus favoritos para verlos aquí 💗</p>
+  <a href="/#catalogo" class="inline-block mt-4 px-4 py-2 bg-pink-500 text-white rounded hover:bg-pink-600 transition">
+    Ver productos
+  </a>
+</div>
+
+
+{% endif %}

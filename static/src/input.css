@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+/* 🎨 Tema global */
+@theme {
+  --font-sans: "Inter", sans-serif;
+  --font-display: "Bebas Neue", sans-serif;
+  --color-azulOscuro: #010D26;
+  --color-rosaPalo: #F6C9D2;
+}
+
+/* 🔤 Fuentes globales */
+body {
+  font-family: var(--font-sans);
+  color: var(--color-azulOscuro);
+  background-color: #f9fafb;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  color: var(--color-azulOscuro);
+}
+
+
+

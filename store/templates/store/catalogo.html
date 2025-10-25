@@ -1,24 +1,43 @@
-<h1>Catálogo de Productos</h1>
+{% extends 'base.html' %}
+{% load static %}
 
-{% for categoria in categorias %}
-    <h2>{{ categoria.nombre }}</h2>
+{% block content %}
+<div class="container mx-auto px-4 py-8">
 
-    {% for subcategoria in categoria.subcategorias.all %}
-        <h3>{{ subcategoria.nombre }}</h3>
-        <div style="display:flex; flex-wrap:wrap;">
-            {% for producto in productos %}
-                {% if producto.subcategoria == subcategoria %}
-                    <div style="border:1px solid #ddd; margin:10px; padding:10px; width:200px;">
-                        <h4>{{ producto.nombre }}</h4>
-                        {% if producto.imagen %}
-                            <img src="{{ producto.imagen.url }}" width="150" alt="{{ producto.nombre }}">
-                        {% endif %}
-                        <p>${{ producto.precio }}</p>
-                        <a href="{% url 'agregar_producto' producto.id %}">🛒 Agregar</a>
-                    </div>
-                {% endif %}
-            {% endfor %}
+  <h1 class="text-3xl font-semibold mb-6 text-center">Catálogo de Productos</h1>
+
+  <!-- Filtros o categorías -->
+  {% if categorias %}
+    <div class="flex flex-wrap justify-center gap-4 mb-8">
+      {% for categoria in categorias %}
+        <a href="?categoria={{ categoria.id }}" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition">
+          {{ categoria.nombre }}
+        </a>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Productos -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    {% if productos %}
+      {% for producto in productos %}
+        <div class="border rounded-lg shadow hover:shadow-lg transition bg-white">
+          <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="w-full h-64 object-cover rounded-t-lg">
+          <div class="p-4">
+            <h2 class="text-lg font-medium mb-2">{{ producto.nombre }}</h2>
+            <p class="text-gray-600 mb-2">${{ producto.precio }}</p>
+            <form action="{% url 'agregar_al_carrito' producto.id %}" method="POST">
+              {% csrf_token %}
+              <button type="submit" class="w-full bg-pink-500 hover:bg-pink-600 text-white py-2 px-4 rounded transition">
+                Agregar al carrito
+              </button>
+            </form>
+          </div>
         </div>
-    {% endfor %}
-{% endfor %}
-
+      {% endfor %}
+    {% else %}
+      <p class="text-center text-gray-500 col-span-full">No hay productos disponibles por el momento.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
